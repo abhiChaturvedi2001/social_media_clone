@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { App_Store_Logo, Play_Store_Logo, app_logo } from "../utils/constant";
-import { signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  console.log("before function calling");
   const [isSignupForm, setisSignupForm] = useState(false);
   const fullName = useRef(null);
   const userName = useRef(null);
@@ -18,12 +19,22 @@ const Login = () => {
   };
 
   const handleLoginWithGoogle = () => {
-    signInWithPopup(auth, googleProvider).then((result) => {
-      const user = result.user;
-      navigate("/instagram");
-      alert(user.displayName);
-    });
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        navigate("/instagram");
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
   };
+  console.log("after  function calling and before jsx rendring");
+
   return (
     <>
       <>

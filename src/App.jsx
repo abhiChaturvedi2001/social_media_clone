@@ -3,6 +3,7 @@ import Login from "./Component/Login";
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import Body from "./Component/Body";
 import ProfileDashboard from "./Component/ProfileDashboard";
+import Feed from "./Component/Feed";
 const App = () => {
   return (
     <>
@@ -18,11 +19,11 @@ export const appRouter = createBrowserRouter([
   },
   {
     path: "/instagram",
-    element: <App />,
+    element: <Body />,
     children: [
       {
         path: "/instagram",
-        element: <Body />,
+        element: <Feed />,
       },
       {
         path: "/instagram/userprofile",
