@@ -1,7 +1,9 @@
 import React from "react";
 import PostSection from "./PostSection";
+import { useSelector } from "react-redux";
 
 const ProfileDashboard = () => {
+  const user = useSelector((store) => store.user);
   return (
     <>
       <div className="w-[55%] mx-auto mt-[100px] font-poppins ">
@@ -15,7 +17,9 @@ const ProfileDashboard = () => {
           </div>
           <div className="right">
             <div className="flex space-x-5">
-              <h1 className="font-bold">abhi_chatrvedi</h1>
+              <h1 className="font-bold">
+                {user === null ? "" : user.displayName}
+              </h1>
               <div className="border cursor-pointer font-poppins w-full px-8 bg-[#efefef] rounded-md">
                 Follow
               </div>

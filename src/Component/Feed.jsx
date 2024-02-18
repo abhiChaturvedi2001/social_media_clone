@@ -5,8 +5,12 @@ import UserPost from "./UserPost";
 const Feed = () => {
   return (
     <>
-      <div className=" w-[40%] pl-5 overflow-y-scroll ">
+      <div className=" pl-5 flex w-[60%] mx-auto mt-8 flex-col  items-center  min-h-[100vh] h-auto justify-center ">
         <UserStories />
+        <UserPost />
+        <UserPost />
+        <UserPost />
+        <UserPost />
         <UserPost />
       </div>
     </>

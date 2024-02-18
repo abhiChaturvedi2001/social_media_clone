@@ -5,11 +5,14 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, googleProvider } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addUser } from "../utils/userSlice";
+import { addUser, removeUser } from "../utils/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -69,6 +72,50 @@ const Login = () => {
       });
   };
 
+  const handleLogin = () => {
+    if (isSignupForm) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: fullName.current.value,
+          })
+            .then(() => {
+              const { uid, email, displayName } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                })
+              );
+            })
+            .catch((error) => {});
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    }
+  };
   return (
     <>
       <>
@@ -88,7 +135,7 @@ const Login = () => {
                 <span className="text-white">login with google </span>
               </p>
             )}
-            <form className="mt-5">
+            <form onSubmit={(e) => e.preventDefault()} className="mt-5">
               <div className=" w-full">
                 <input
                   className="px-2 w-full bg-gray-100 py-2 outline-none border rounded-md"
@@ -137,7 +184,10 @@ const Login = () => {
                   Cookies Policy.
                 </p>
               )}
-              <button className="mt-2 bg-[#60b3f7] rounded-lg font-semibold text-white w-full py-2">
+              <button
+                onClick={handleLogin}
+                className="mt-2 bg-[#60b3f7] rounded-lg font-semibold text-white w-full py-2"
+              >
                 {isSignupForm ? "Sign Up" : "Login"}
               </button>
             </form>

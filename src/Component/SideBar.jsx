@@ -8,9 +8,16 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { signOut } from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const SideBar = () => {
   const user = useSelector((store) => store.user);
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {})
+      .catch((error) => {});
+  };
   return (
     <>
       <div className="flex fixed flex-col pl-5  w-[20%] border-r-[1px] border-gray-300 px-2 justify-between h-[100vh] py-5 ">
@@ -19,10 +26,12 @@ const SideBar = () => {
         </div>
 
         <div>
-          <div className="flex items-center hover:cursor-pointer my-4 px-2 hover:bg-[#efefef83] py-2 text-center rounded-md transition-all delay-100 space-x-2">
-            <MdHomeFilled className="text-3xl" />
-            <h2 className="text-lg font-poppins">Home</h2>
-          </div>
+          <Link to={"/instagram"}>
+            <div className="flex items-center hover:cursor-pointer my-4 px-2 hover:bg-[#efefef83] py-2 text-center rounded-md transition-all delay-100 space-x-2">
+              <MdHomeFilled className="text-3xl" />
+              <h2 className="text-lg font-poppins">Home</h2>
+            </div>
+          </Link>
           <div className="flex items-center hover:cursor-pointer my-4 px-2 hover:bg-[#efefef83] py-2 text-center rounded-md transition-all delay-100 space-x-2">
             <CiSearch className="text-3xl" />
             <h2>Search</h2>
@@ -59,7 +68,10 @@ const SideBar = () => {
           </Link>
         </div>
 
-        <div className="flex items-center  hover:cursor-pointer py-2 px-2  rounded-md  transition-all delay-100 hover:bg-[#efefef86]  space-x-2">
+        <div
+          onClick={handleLogout}
+          className="flex items-center  hover:cursor-pointer py-2 px-2  rounded-md  transition-all delay-100 hover:bg-[#efefef86]  space-x-2"
+        >
           <FaBars className="text-3xl" />
           <h2>More</h2>
         </div>

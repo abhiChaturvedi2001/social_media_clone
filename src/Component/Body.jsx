@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import SideBar from "./SideBar";
-import Feed from "./Feed";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
+import Suggestion from "./Suggestion";
 
 const Body = () => {
   const dispatch = useDispatch();
