@@ -1,18 +1,44 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { App_Store_Logo, Play_Store_Logo, app_logo } from "../utils/constant";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { auth, googleProvider } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
-  console.log("before function calling");
+  const dispatch = useDispatch();
   const [isSignupForm, setisSignupForm] = useState(false);
   const fullName = useRef(null);
   const userName = useRef(null);
   const password = useRef(null);
   const email = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/instagram");
+      } else {
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+  }, []);
 
   const handleToggle = () => {
     setisSignupForm(!isSignupForm);
@@ -24,7 +50,16 @@ const Login = () => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-        navigate("/instagram");
+        const { uid, email, displayName, photoURL } = user;
+        console.log(user);
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
       })
       .catch((error) => {
         // Handle Errors here.
@@ -33,7 +68,6 @@ const Login = () => {
         const credential = GoogleAuthProvider.credentialFromError(error);
       });
   };
-  console.log("after  function calling and before jsx rendring");
 
   return (
     <>
